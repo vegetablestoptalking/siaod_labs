@@ -20,8 +20,11 @@ class Graph:
         self.edges[from_node].append(to_node)
         self.distances[(from_node, to_node)] = cost
 
+    def print_graph(self) -> list:
+        return [str(self.edges), str(self.distances)]
 
-def find_min_road(graph: Graph, init: str) -> (dict, dict):  # i'm hate yours lower-case. java, i love you :(
+
+def find_min_road(graph: Graph, init: str) -> (dict, dict):  
 
     costs = {init: 0}
     path = {}
@@ -68,6 +71,11 @@ graph = Graph()
 
 # GUI
 
+def btn_print_graph() -> None:
+    global graph
+    scr.insert(INSERT, "Вершины: " + str(graph.print_graph()[0])+"\n")
+    scr.insert(INSERT, "Путь: " + str(graph.print_graph()[1])+"\n")
+
 def btn_add_node() -> None:
     graph.add_node(txt1.get())
 
@@ -85,9 +93,11 @@ def btn_road() -> None:
     from_node = txt1.get()
     to_node = txt2.get()
     vis, path = find_min_road(graph, from_node)
-    scr.insert(INSERT, "Минимальная стоимость: " + str(vis[to_node]) + '\n')
-    scr.insert(INSERT, "Путь: " + get_road(path, from_node, to_node) + '\n')
-
+    if to_node in vis.keys() and from_node in vis.keys():
+        scr.insert(INSERT, "Минимальная стоимость: " + str(vis[to_node]) + '\n')
+        scr.insert(INSERT, "Путь: " + get_road(path, from_node, to_node) + '\n')
+    else:
+        scr.insert(INSERT, "Пути нет\n")
 
 window = Tk()
 window.title("Лабораторная работа 1")
@@ -102,7 +112,7 @@ txt2.grid(column=2, row=3)
 txt3 = Entry(window, width=30)
 txt3.grid(column=2, row=4)
 
-scr = scrolledtext.ScrolledText(window, width=30, height=10)
+scr = scrolledtext.ScrolledText(window, width=40, height=10)
 scr.grid(column=1, row=0)
 btn_append_node = Button(window, text="Добавить вершину(1-ый)", command=btn_add_node)
 btn_append_node.grid(column=1, row=1)
@@ -112,6 +122,8 @@ btn_clear = Button(window, text="Очистить граф", command=btn_clear_g
 btn_clear.grid(column=1, row=3)
 btn_get_road = Button(window, text="Вычислить путь до пункта(1-ый, 2-ой)", command=btn_road)
 btn_get_road.grid(column=1, row=4)
+btn_print = Button(window, text="Напечатать граф", command=btn_print_graph)
+btn_print.grid(column=1, row=5)
 
 
 window.mainloop()
